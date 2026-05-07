@@ -51,7 +51,7 @@ class RAGService:
                 page=res["metadata"].get("page"),
                 text=res["text"],
                 document=res["metadata"].get("source", "Unknown"),
-                chunk_id=res["metadata"].get("chunk_index")
+                chunk_id=str(res["metadata"].get("chunk_index", "")) if res["metadata"].get("chunk_index") is not None else None
             ))
             
         return ChatResponse(

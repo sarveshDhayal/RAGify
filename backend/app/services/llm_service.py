@@ -8,7 +8,12 @@ logger = logging.getLogger(__name__)
 class LLMService:
     def __init__(self):
         self.settings = get_settings()
-        self.client = AsyncOpenAI(api_key=self.settings.OPENAI_API_KEY)
+        api_key = self.settings.OPENAI_API_KEY
+        # Automatically route to Gemini if a Google API Key is provided
+        if api_key and api_key.startswith("AIza"):
+            self.client = AsyncOpenAI(api_key=api_key, base_url="https://generativelanguage.googleapis.com/v1beta/openai/")
+        else:
+            self.client = AsyncOpenAI(api_key=api_key)
         self.model = self.settings.LLM_MODEL
 
     async def generate_answer(self, query: str, context_chunks: List[Dict[str, Any]]) -> str:
@@ -43,6 +48,6 @@ class LLMService:
             return response.choices[0].message.content
         except Exception as e:
             logger.error(f"OpenAI API error: {str(e)}")
-            raise Exception("Failed to generate answer from LLM.")
+            raise Exception(f"Failed to generate answer from LLM. Detail: {str(e)}")
 
 llm_service = LLMService()
