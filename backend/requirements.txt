@@ -6,8 +6,8 @@ pydantic-settings
 chromadb
 langchain
 langchain-openai
+langchain-google-genai
 langchain-community
-sentence-transformers
 openai
 PyPDF2
 python-dotenv
