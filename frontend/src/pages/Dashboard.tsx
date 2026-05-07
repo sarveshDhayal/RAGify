@@ -86,10 +86,10 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="h-full flex flex-col xl:flex-row gap-6 max-w-[1600px] mx-auto p-4 md:p-6 lg:p-8">
+    <div className="flex-1 flex flex-col xl:flex-row gap-6 p-4 md:p-6 lg:p-8 min-h-0 overflow-y-auto xl:overflow-hidden">
       
       {/* Left Column: Upload */}
-      <div className="w-full xl:w-1/3 flex flex-col gap-6 shrink-0">
+      <div className="w-full xl:w-1/3 flex flex-col gap-6 shrink-0 min-h-[400px] xl:min-h-0">
         <GlassCard className="flex-none p-6">
           <h3 className="text-lg font-semibold text-white mb-1 flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-purple-400" />
@@ -138,8 +138,8 @@ export default function Dashboard() {
            <div className="p-4 flex-1 overflow-y-auto space-y-2">
              {documents.map((doc, i) => (
                 <div key={i} className="flex items-center gap-2 text-sm text-gray-400 bg-white/5 p-2 rounded-lg border border-white/5">
-                  <FileIcon size={14} className="text-blue-400 shrink-0"/>
-                  <span className="truncate">{doc.filename}</span>
+                   <FileIcon size={14} className="text-blue-400 shrink-0"/>
+                   <span className="truncate">{doc.filename}</span>
                 </div>
              ))}
              {documents.length === 0 && <p className="text-sm text-gray-600 text-center mt-4">Empty Vector Store</p>}
@@ -148,7 +148,7 @@ export default function Dashboard() {
       </div>
 
       {/* Right Column: AI Chat */}
-      <GlassCard className="w-full xl:w-2/3 h-[600px] xl:h-[calc(100vh-4rem)] flex flex-col p-0 overflow-hidden relative">
+      <GlassCard className="w-full xl:w-2/3 min-h-[500px] xl:min-h-0 flex-1 flex flex-col p-0 overflow-hidden relative">
         <div className="p-4 border-b border-white/10 bg-white/5 backdrop-blur-md z-10 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]" />
