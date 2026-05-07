@@ -6,7 +6,7 @@ from google.auth.transport import requests
 security = HTTPBearer()
 
 # Your Google OAuth Client ID
-CLIENT_ID = "959535440286-9jpnkvi5bv10v6ji3cih1kiu7dru0qp0.apps.googleusercontent.com"
+CLIENT_ID = "959535440286-21n1dkp9703h8um2hppper6m5f6s4vu9.apps.googleusercontent.com"
 
 async def get_current_user(cred: HTTPAuthorizationCredentials = Security(security)) -> str:
     """Verifies the Google OAuth JWT token and returns the user's unique Google ID (sub)."""

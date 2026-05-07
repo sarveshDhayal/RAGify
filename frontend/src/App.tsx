@@ -7,7 +7,7 @@ import Dashboard from './pages/Dashboard';
 import Auth from './pages/Auth';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-const CLIENT_ID = "959535440286-9jpnkvi5bv10v6ji3cih1kiu7dru0qp0.apps.googleusercontent.com";
+const CLIENT_ID = "959535440286-21n1dkp9703h8um2hppper6m5f6s4vu9.apps.googleusercontent.com";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuthStore();
