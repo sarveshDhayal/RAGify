@@ -1,16 +1,18 @@
 import React, { useEffect } from 'react';
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
-import { BrainCircuit, FileText, MessageSquare, Database, Trash2, LogOut } from 'lucide-react';
+import { BrainCircuit, FileText, MessageSquare, Database, Trash2, LogOut, Settings, Menu, X } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { getDocuments, deleteDocument } from '../services/api';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuthStore } from '../store/useAuthStore';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function DashboardLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { documents, setDocuments, currentDocumentId, setCurrentDocumentId } = useStore();
   const { user, logout } = useAuthStore();
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
   useEffect(() => {
     fetchDocs();
@@ -44,10 +46,11 @@ export default function DashboardLayout() {
 
   const navItems = [
     { icon: MessageSquare, label: 'Chat', path: '/dashboard' },
+    { icon: Settings, label: 'Settings', path: '/settings' },
   ];
 
   return (
-    <div className="h-screen w-full bg-[#0B0F19] text-white flex overflow-hidden font-sans selection:bg-purple-500/30">
+    <div className="flex h-screen w-full bg-[#0B0F19] text-white overflow-hidden font-sans selection:bg-purple-500/30">
       <Toaster position="top-right" toastOptions={{ style: { background: '#1e1e2d', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' } }} />
       
       {/* Background glow */}
@@ -55,16 +58,36 @@ export default function DashboardLayout() {
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-purple-900/20 blur-[120px]" />
       </div>
 
-      {/* Glass Sidebar */}
-      <aside className="relative z-10 w-20 lg:w-72 border-r border-white/10 bg-white/[0.02] backdrop-blur-3xl flex flex-col transition-all duration-300">
-        <div className="h-16 flex items-center justify-center lg:justify-start lg:px-6 border-b border-white/10 shrink-0">
+      {/* Mobile Sidebar Toggle */}
+      <div className="lg:hidden fixed top-4 left-4 z-50">
+        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 bg-white/10 rounded-lg backdrop-blur-md border border-white/10 shadow-lg">
+          {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+      </div>
+
+      {/* Sidebar Overlay for Mobile */}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsSidebarOpen(false)}
+            className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Sidebar */}
+      <aside className={`fixed lg:relative inset-y-0 left-0 w-72 border-r border-white/10 bg-white/[0.02] backdrop-blur-3xl flex flex-col z-40 transform transition-transform duration-300 lg:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="h-16 flex items-center px-6 border-b border-white/10 shrink-0">
           <Link to="/" className="flex items-center gap-2 group">
             <BrainCircuit className="text-purple-500 w-8 h-8 group-hover:scale-110 transition-transform" />
-            <span className="hidden lg:block font-bold text-xl tracking-tight text-white">RAGify</span>
+            <span className="font-bold text-xl tracking-tight text-white">RAGify</span>
           </Link>
         </div>
 
-        <div className="flex-1 overflow-y-auto py-6 px-3 lg:px-4">
+        <div className="flex-1 overflow-y-auto py-6 px-4">
           <div className="space-y-2 mb-8">
             {navItems.map((item) => {
               const isActive = location.pathname === item.path;
@@ -72,18 +95,19 @@ export default function DashboardLayout() {
                 <Link
                   key={item.label}
                   to={item.path}
-                  className={`relative flex items-center gap-3 px-3 lg:px-4 py-3 rounded-xl transition-all duration-200 group ${
-                    isActive ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  onClick={() => setIsSidebarOpen(false)}
+                  className={`relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+                    isActive ? 'text-white bg-white/10 shadow-lg' : 'text-gray-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   <item.icon size={20} className={isActive ? 'text-purple-400' : 'group-hover:text-purple-400'} />
-                  <span className="hidden lg:block text-sm font-medium">{item.label}</span>
+                  <span className="text-sm font-medium">{item.label}</span>
                 </Link>
               );
             })}
           </div>
 
-          <div className="hidden lg:block">
+          <div>
             <div className="flex items-center justify-between px-2 mb-3">
               <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Your Documents</h3>
               <button onClick={fetchDocs} className="text-gray-500 hover:text-white transition-colors">
@@ -111,7 +135,7 @@ export default function DashboardLayout() {
           </div>
         </div>
 
-        <div className="p-4 border-t border-white/10 shrink-0 hidden lg:flex items-center justify-between bg-white/[0.01]">
+        <div className="p-4 border-t border-white/10 shrink-0 flex items-center justify-between bg-white/[0.01]">
           <div className="flex items-center gap-3">
             {user?.picture ? (
               <img src={user.picture} alt="Profile" className="w-9 h-9 rounded-full border border-white/20 shadow-lg" />
@@ -132,10 +156,8 @@ export default function DashboardLayout() {
       </aside>
 
       {/* Main Workspace */}
-      <main className="relative z-10 flex-1 flex flex-col h-full overflow-hidden">
-        <div className="flex-1 overflow-hidden">
-          <Outlet />
-        </div>
+      <main className="flex-1 flex flex-col h-full relative overflow-hidden">
+        <Outlet />
       </main>
     </div>
   );
