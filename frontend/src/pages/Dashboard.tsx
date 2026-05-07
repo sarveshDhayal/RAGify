@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UploadCloud, File as FileIcon, X, Send, Bot, User, Sparkles, Loader2 } from 'lucide-react';
+import { UploadCloud, File as FileIcon, Send, Bot, User, Sparkles, Loader2 } from 'lucide-react';
 import { GlassCard } from '../components/ui/GlassCard';
 import ReactMarkdown from 'react-markdown';
 import { uploadFile, askQuestion } from '../services/api';
