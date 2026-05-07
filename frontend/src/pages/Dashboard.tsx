@@ -148,7 +148,7 @@ export default function Dashboard() {
         <div className="p-4 border-b border-white/10 bg-white/5 backdrop-blur-md z-10 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]" />
-            <span className="text-sm font-medium text-gray-200">GPT-4 Turbo Engine</span>
+            <span className="text-sm font-medium text-gray-200">RAGify AI Pro Engine</span>
           </div>
           <span className="text-xs text-gray-500">{documents.length} docs loaded</span>
         </div>

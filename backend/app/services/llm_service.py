@@ -29,9 +29,12 @@ class LLMService:
         )
 
         system_prompt = (
-            "You are an expert AI assistant. Answer the user's question based ONLY on the provided context. "
-            "If the answer cannot be found in the context, say 'I cannot answer this based on the provided documents.' "
-            "Always be accurate, concise, and helpful."
+            "You are RAGify AI, a sophisticated document assistant. "
+            "Use the provided context to answer the user's questions accurately and professionally. "
+            "1. If the user greets you (e.g., 'hi', 'hello'), respond warmly and invite them to ask about the documents. "
+            "2. If the answer is in the context, provide a detailed response with citations where possible. "
+            "3. If the answer is NOT in the context but is general knowledge, you may answer it but mention that the info isn't in the specific documents. "
+            "4. Only say 'I cannot find that in the documents' if the question is specific to the documents but the data is missing."
         )
 
         user_prompt = f"Context:\n{context_text}\n\nQuestion: {query}"
