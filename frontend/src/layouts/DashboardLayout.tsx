@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { FileText, MessageSquare, Database, BrainCircuit, Trash2, Plus } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
+import { BrainCircuit, FileText, MessageSquare, Database, Trash2, LogOut } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { getDocuments, deleteDocument } from '../services/api';
 import toast, { Toaster } from 'react-hot-toast';
+import { useAuthStore } from '../store/useAuthStore';
 
 export default function DashboardLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { documents, setDocuments, currentDocumentId, setCurrentDocumentId } = useStore();
+  const { user, logout } = useAuthStore();
 
   useEffect(() => {
     fetchDocs();
@@ -33,6 +34,12 @@ export default function DashboardLayout() {
     } catch (e) {
       toast.error('Failed to delete');
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    toast.success("Logged out successfully");
+    navigate('/auth');
   };
 
   const navItems = [
@@ -104,14 +111,23 @@ export default function DashboardLayout() {
           </div>
         </div>
 
-        <div className="p-4 border-t border-white/10 shrink-0 hidden lg:flex items-center gap-3 bg-white/[0.01]">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-purple-500 to-blue-500 flex items-center justify-center border border-white/20 shadow-lg">
-             <span className="text-sm font-bold text-white">JD</span>
+        <div className="p-4 border-t border-white/10 shrink-0 hidden lg:flex items-center justify-between bg-white/[0.01]">
+          <div className="flex items-center gap-3">
+            {user?.picture ? (
+              <img src={user.picture} alt="Profile" className="w-9 h-9 rounded-full border border-white/20 shadow-lg" />
+            ) : (
+              <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-purple-500 to-blue-500 flex items-center justify-center border border-white/20 shadow-lg">
+                <span className="text-sm font-bold text-white">{user?.name?.charAt(0).toUpperCase() || 'U'}</span>
+              </div>
+            )}
+            <div className="flex flex-col w-[120px]">
+              <span className="text-sm font-medium text-white truncate">{user?.name || 'User'}</span>
+              <span className="text-xs text-gray-500 truncate">{user?.email}</span>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <span className="text-sm font-medium text-white">Pro User</span>
-            <span className="text-xs text-gray-500">Premium Plan</span>
-          </div>
+          <button onClick={handleLogout} className="p-2 text-gray-400 hover:text-red-400 transition-colors bg-white/5 hover:bg-white/10 rounded-lg" title="Logout">
+            <LogOut size={16} />
+          </button>
         </div>
       </aside>
 

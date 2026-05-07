@@ -24,25 +24,31 @@ class VectorService:
             )
         return self.vectorstore
 
-    async def store_chunks(self, chunks: List[Dict[str, Any]]) -> List[str]:
+    async def store_chunks(self, chunks: List[Dict[str, Any]], user_id: str) -> List[str]:
         """
-        Stores document chunks into ChromaDB.
+        Stores document chunks into ChromaDB with tenant isolation.
         """
         vs = self._get_vectorstore()
         texts = [chunk["text"] for chunk in chunks]
-        metadatas = [chunk["metadata"] for chunk in chunks]
+        metadatas = []
+        for chunk in chunks:
+            meta = chunk["metadata"].copy()
+            meta["user_id"] = user_id  # Inject tenant ID for isolation
+            metadatas.append(meta)
+            
         ids = [str(uuid.uuid4()) for _ in chunks]
         
         vs.add_texts(texts=texts, metadatas=metadatas, ids=ids)
         vs.persist()
         return ids
 
-    async def similarity_search(self, query: str, k: int = 4) -> List[Dict[str, Any]]:
+    async def similarity_search(self, query: str, user_id: str, k: int = 4) -> List[Dict[str, Any]]:
         """
-        Performs similarity search against stored vectors.
+        Performs similarity search against stored vectors ONLY for the given user.
         """
         vs = self._get_vectorstore()
-        results = vs.similarity_search_with_score(query, k=k)
+        # Ensure we only fetch chunks that belong to this specific user_id
+        results = vs.similarity_search_with_score(query, k=k, filter={"user_id": user_id})
         
         formatted_results = []
         for doc, score in results:

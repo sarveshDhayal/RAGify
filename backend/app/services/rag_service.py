@@ -10,11 +10,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 class RAGService:
-    async def process_document(self, file_path: str, filename: str) -> Dict[str, Any]:
+    async def process_document(self, file_path: str, filename: str, user_id: str) -> Dict[str, Any]:
         """
-        End-to-end pipeline for ingesting a document.
+        End-to-end pipeline for ingesting a document for a specific user.
         """
-        logger.info(f"Processing document: {filename}")
+        logger.info(f"Processing document: {filename} for user: {user_id}")
         
         # 1. Extract text
         docs = await pdf_service.extract_text(file_path)
@@ -24,8 +24,8 @@ class RAGService:
         chunks = await chunk_service.create_chunks(docs)
         logger.info(f"Created {len(chunks)} chunks.")
         
-        # 3. Embed & Store
-        ids = await vector_service.store_chunks(chunks)
+        # 3. Embed & Store with tenant isolation
+        ids = await vector_service.store_chunks(chunks, user_id)
         logger.info(f"Stored {len(ids)} vectors in ChromaDB.")
         
         return {
@@ -34,12 +34,12 @@ class RAGService:
             "document_id": filename
         }
 
-    async def ask_question(self, question: str) -> ChatResponse:
+    async def ask_question(self, question: str, user_id: str) -> ChatResponse:
         """
-        End-to-end pipeline for RAG querying.
+        End-to-end pipeline for RAG querying specific to a user.
         """
-        # 1. Retrieve relevant chunks
-        results = await vector_service.similarity_search(question, k=4)
+        # 1. Retrieve relevant chunks for THIS user only
+        results = await vector_service.similarity_search(question, user_id, k=4)
         
         # 2. Generate answer using LLM
         answer = await llm_service.generate_answer(question, results)
