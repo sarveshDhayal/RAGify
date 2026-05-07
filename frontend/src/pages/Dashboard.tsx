@@ -153,7 +153,7 @@ export default function Dashboard() {
           <span className="text-xs text-gray-500">{documents.length} docs loaded</span>
         </div>
 
-        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 lg:p-6 space-y-8 scroll-smooth pb-32">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 lg:p-6 space-y-8 scroll-smooth">
           <AnimatePresence>
             {messages.map((msg, idx) => (
               <motion.div
@@ -209,10 +209,9 @@ export default function Dashboard() {
           </AnimatePresence>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 pt-12 bg-gradient-to-t from-[#0B0F19] via-[#0B0F19]/90 to-transparent">
+        <div className="shrink-0 p-4 bg-white/[0.02] border-t border-white/10">
           <form onSubmit={handleChat} className="relative max-w-4xl mx-auto">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-2xl blur-lg" />
-            <div className="relative flex items-end gap-2 bg-[#1a1a24] border border-white/10 rounded-2xl p-1.5 shadow-[0_0_30px_rgba(0,0,0,0.5)] focus-within:border-purple-500/50 focus-within:bg-[#1a1a24]/90 transition-all">
+            <div className="relative flex items-end gap-2 bg-[#1a1a24] border border-white/10 rounded-2xl p-1.5 shadow-xl focus-within:border-purple-500/50 transition-all">
               <input
                 type="text"
                 value={query}
@@ -223,12 +222,12 @@ export default function Dashboard() {
               <button 
                 type="submit"
                 disabled={!query.trim() || isLoading}
-                className="p-3 m-1 bg-white/5 hover:bg-purple-500 text-gray-400 hover:text-white rounded-xl disabled:opacity-50 disabled:hover:bg-white/5 disabled:hover:text-gray-400 transition-colors shrink-0"
+                className="p-3 m-1 bg-white/5 hover:bg-purple-500 text-gray-400 hover:text-white rounded-xl disabled:opacity-50 transition-colors shrink-0"
               >
                 <Send size={18} />
               </button>
             </div>
-            <p className="text-[10px] text-gray-500 text-center mt-3">RAGify AI can make mistakes. Verify important information from the citations.</p>
+            <p className="text-[10px] text-gray-500 text-center mt-3 font-medium">RAGify AI can make mistakes. Verify important information from citations.</p>
           </form>
         </div>
       </GlassCard>
