@@ -13,3 +13,5 @@ PyPDF2
 python-dotenv
 motor
 tiktoken
+google-auth
+requests
