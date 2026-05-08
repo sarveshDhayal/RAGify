@@ -40,8 +40,8 @@ export const uploadFile = async (file: File) => {
   return response.data;
 };
 
-export const askQuestion = async (question: string) => {
-  const response = await api.post('/api/ask', { question });
+export const askQuestion = async (messages: { role: string; content: string }[]) => {
+  const response = await api.post('/api/ask', { messages });
   return response.data;
 };
 

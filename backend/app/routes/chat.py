@@ -8,7 +8,7 @@ router = APIRouter()
 @router.post("/ask", response_model=ChatResponse)
 async def ask_question(request: ChatRequest, user_id: str = Depends(get_current_user)):
     try:
-        response = await rag_service.ask_question(request.question, user_id)
+        response = await rag_service.ask_question(request.messages, user_id)
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to generate answer: {str(e)}")

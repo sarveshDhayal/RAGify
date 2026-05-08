@@ -72,11 +72,13 @@ export default function Dashboard() {
 
     const userMsg = query;
     setQuery('');
-    addMessage({ id: Date.now().toString(), role: 'user', content: userMsg });
+    const newUserMessage = { id: Date.now().toString(), role: 'user' as const, content: userMsg };
+    addMessage(newUserMessage);
     setIsLoading(true);
 
     try {
-      const response = await askQuestion(userMsg);
+      const historyToSend = [...messages.map(m => ({ role: m.role, content: m.content })), { role: newUserMessage.role, content: newUserMessage.content }];
+      const response = await askQuestion(historyToSend);
       await simulateStreaming(response.answer, response.sources);
     } catch (error) {
       setIsLoading(false);

@@ -7,9 +7,12 @@ class SourceCitation(BaseModel):
     document: str
     chunk_id: Optional[str]
 
+class Message(BaseModel):
+    role: str
+    content: str
+
 class ChatRequest(BaseModel):
-    question: str
-    history: Optional[List[dict]] = []
+    messages: List[Message]
 
 class ChatResponse(BaseModel):
     answer: str

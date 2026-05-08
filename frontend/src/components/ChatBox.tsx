@@ -14,12 +14,14 @@ export default function ChatBox() {
     if (!query.trim()) return;
 
     const userMessage = query;
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    const newMessage = { role: 'user', content: userMessage };
+    setMessages(prev => [...prev, newMessage]);
     setQuery('');
     setIsLoading(true);
 
     try {
-      const response = await askQuestion(userMessage);
+      const historyToSend = [...messages, newMessage];
+      const response = await askQuestion(historyToSend);
       setMessages(prev => [...prev, { role: 'assistant', content: response.answer }]);
     } catch (error) {
       console.error(error);

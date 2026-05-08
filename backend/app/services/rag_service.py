@@ -34,15 +34,16 @@ class RAGService:
             "document_id": filename
         }
 
-    async def ask_question(self, question: str, user_id: str) -> ChatResponse:
+    async def ask_question(self, messages: list, user_id: str) -> ChatResponse:
         """
         End-to-end pipeline for RAG querying specific to a user.
         """
+        question = messages[-1].content
         # 1. Retrieve relevant chunks for THIS user only
         results = await vector_service.similarity_search(question, user_id, k=4)
         
         # 2. Generate answer using LLM
-        answer = await llm_service.generate_answer(question, results)
+        answer = await llm_service.generate_answer(messages, results)
         
         # 3. Format citations
         sources = []

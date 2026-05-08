@@ -16,7 +16,7 @@ class LLMService:
             self.client = AsyncOpenAI(api_key=api_key)
         self.model = self.settings.LLM_MODEL
 
-    async def generate_answer(self, query: str, context_chunks: List[Dict[str, Any]]) -> str:
+    async def generate_answer(self, messages: list, context_chunks: List[Dict[str, Any]]) -> str:
         """
         Generates an answer using OpenAI GPT based on the provided context chunks.
         """
@@ -37,15 +37,18 @@ class LLMService:
             "4. Only say 'I cannot find that in the documents' if the question is specific to the documents but the data is missing."
         )
 
-        user_prompt = f"Context:\n{context_text}\n\nQuestion: {query}"
+        question = messages[-1].content
+        user_prompt = f"Context:\n{context_text}\n\nQuestion: {question}"
+
+        openai_messages = [{"role": "system", "content": system_prompt}]
+        for msg in messages[:-1]:
+            openai_messages.append({"role": msg.role, "content": msg.content})
+        openai_messages.append({"role": "user", "content": user_prompt})
 
         try:
             response = await self.client.chat.completions.create(
                 model=self.model,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt}
-                ],
+                messages=openai_messages,
                 temperature=0.3,
             )
             return response.choices[0].message.content
