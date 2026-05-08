@@ -4,7 +4,7 @@ import { AnimatedNavbar } from '../components/AnimatedNavbar';
 import { FloatingGradientBackground } from '../components/FloatingGradientBackground';
 import { GradientButton } from '../components/ui/GradientButton';
 import { GlassCard } from '../components/ui/GlassCard';
-import { ArrowRight, Bot, Zap, Shield, FileSearch } from 'lucide-react';
+import { ArrowRight, Bot, Zap, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function LandingPage() {
